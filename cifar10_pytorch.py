@@ -12,6 +12,28 @@ from torch.backends import cudnn
 
 from models.resnet20_pytorch import resnet20_cifar
 
+parser = argparse.ArgumentParser(description='PyTorch Cifar10 Training')
+parser.add_argument('--epochs', default=200, type=int,
+                    metavar='N', help='number of total epochs to run')
+parser.add_argument('--start-epoch', default=0, type=int,
+                    metavar='N', help='manual epoch number (useful on restarts)')
+parser.add_argument('-b', '--batch-size', default=128, type=int, metavar='N',
+                    help='mini-batch size (default: 128),only used for train')
+parser.add_argument('--lr', '--learning-rate', default=0.1,
+                    type=float, metavar='LR', help='initial learning rate')
+parser.add_argument('--momentum', default=0.9,
+                    type=float, metavar='M', help='momentum')
+parser.add_argument('--weight-decay', '--wd', default=1e-4,
+                    type=float, metavar='W', help='weight decay (default: 1e-4)')
+parser.add_argument('--print-freq', '-p', default=10, type=int,
+                    metavar='N', help='print frequency (default: 10)')
+parser.add_argument('--resume', default='', type=str, metavar='PATH',
+                    help='path to latest checkpoint (default: none)')
+parser.add_argument('-e', '--evaluate', dest='evaluate',
+                    action='store_true', help='evaluate model on validation set')
+args = parser.parse_args()
+
+
 normalize = T.Normalize(mean=[0.491, 0.482, 0.447], std=[0.247, 0.243, 0.262])
 
 train_transform = T.Compose([
@@ -29,12 +51,12 @@ val_transform = T.Compose([
 trainset = torchvision.datasets.CIFAR10(
     root='./data', train=True, download=True, transform=train_transform)
 trainloader = torch.utils.data.DataLoader(
-    trainset, batch_size=4, shuffle=True, num_workers=2)
+    trainset, batch_size=args.batch_size, shuffle=True, num_workers=2)
 
 testset = torchvision.datasets.CIFAR10(
     root='./data', train=False, download=True, transform=val_transform)
 testloader = torch.utils.data.DataLoader(
-    testset, batch_size=4, shuffle=False, num_workers=2)
+    testset, batch_size=args.batch_size, shuffle=False, num_workers=2)
 
 best_prec = 0
 
@@ -177,30 +199,10 @@ def adjust_learning_rate(optimizer, epoch):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='PyTorch Cifar10 Training')
-    parser.add_argument('--epochs', default=200, type=int,
-                        metavar='N', help='number of total epochs to run')
-    parser.add_argument('--start-epoch', default=0, type=int,
-                        metavar='N', help='manual epoch number (useful on restarts)')
-    parser.add_argument('-b', '--batch-size', default=128, type=int, metavar='N',
-                        help='mini-batch size (default: 128),only used for train')
-    parser.add_argument('--lr', '--learning-rate', default=0.1,
-                        type=float, metavar='LR', help='initial learning rate')
-    parser.add_argument('--momentum', default=0.9,
-                        type=float, metavar='M', help='momentum')
-    parser.add_argument('--weight-decay', '--wd', default=1e-4,
-                        type=float, metavar='W', help='weight decay (default: 1e-4)')
-    parser.add_argument('--print-freq', '-p', default=10, type=int,
-                        metavar='N', help='print frequency (default: 10)')
-    parser.add_argument('--resume', default='', type=str, metavar='PATH',
-                        help='path to latest checkpoint (default: none)')
-    parser.add_argument('-e', '--evaluate', dest='evaluate',
-                        action='store_true', help='evaluate model on validation set')
-    args = parser.parse_args()
 
     if not os.path.exists('result'):
         os.makedirs('result')
-    fdir = 'result/resnet20_cifar10'
+    fdir = 'result/resnet20_cifar10_pytorch'
     if not os.path.exists(fdir):
         os.makedirs(fdir)
 
