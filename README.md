@@ -17,7 +17,7 @@ Batch Size: 128
 | ------------------------ | ------------------ |
 | resnet20-pytorch         | 801MiB / 12196MiB  |
 | resnet20-mxnet           | 1203MiB / 12196MiB |
-| resnet20-mxnet-hybridize | [TODO]             |
+| resnet20-mxnet-hybridize | 797MiB / 12196MiB  |
 
 ### Time
 
