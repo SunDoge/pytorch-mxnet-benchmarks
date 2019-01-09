@@ -238,3 +238,4 @@ if __name__ == '__main__':
 
     epoch_end = time.time()
     print('total time:', epoch_end - epoch_start)
+    print('best acc:', best_prec)
