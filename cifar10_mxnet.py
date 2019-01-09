@@ -124,7 +124,7 @@ def train(trainloader, net, loss_fn, trainer, epoch):
 
         batch_size = input.shape[0]
 
-        losses.update(loss.sum().asscalar(), batch_size)
+        losses.update(loss.mean().asscalar(), batch_size)
         train_metric.update(target, output)
         _, acc = train_metric.get()
         acc *= 100
@@ -162,7 +162,7 @@ def validate(val_loader, net, loss_fn):
         output = net(input)
         loss = loss_fn(output, target)
 
-        losses.update(loss.sum().asscalar(), input.shape[0])
+        losses.update(loss.mean().asscalar(), input.shape[0])
         metric.update(target, output)
         _, acc = metric.get()
         acc *= 100
