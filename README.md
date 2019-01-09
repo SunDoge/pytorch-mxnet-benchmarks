@@ -28,3 +28,11 @@ Epochs: 200
 | resnet20-pytorch         | [TODO] |
 | resnet20-mxnet           | [TODO] |
 | resnet20-mxnet-hybridize | [TODO] |
+
+### Accuracy
+
+| Model                    | Accuracy |
+|--------------------------|----------|
+| resnet20-pytorch         | [TODO]   |
+| resnet20-mxnet           | [TODO]   |
+| resnet20-mxnet-hybridize | [TODO]   |

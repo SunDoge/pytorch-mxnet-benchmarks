@@ -122,16 +122,14 @@ def train(trainloader, net, loss_fn, trainer, epoch):
             output = net(input)
             loss = loss_fn(output, target)
 
-        batch_size = input.shape[0]
-
-        losses.update(loss.mean().asscalar(), batch_size)
+        losses.update(loss.mean().asscalar(), input.shape[0])
         train_metric.update(target, output)
         _, acc = train_metric.get()
         acc *= 100
         top1.update(acc.item(), input.shape[0])
 
         loss.backward()
-        trainer.step(batch_size)
+        trainer.step(input.shape[0])
 
         # measure elapsed time
         batch_time.update(time.time() - end)
