@@ -237,3 +237,6 @@ if __name__ == '__main__':
         best_prec = max(prec, best_prec)
 
         save_checkpoint(net, is_best, fdir)
+
+    epoch_end = time.time()
+    print('total time:', epoch_end - epoch_start)
