@@ -41,15 +41,15 @@ class RandomCrop(gluon.nn.Block):
         x = mx.image.copyMakeBorder(
             x, self.padding, self.padding, self.padding, self.padding)
         # print(x.shape)
-        x = mx.image.random_crop(x, (self.size, self.size))
+        x, _ = mx.image.random_crop(x, (self.size, self.size))
         return x
 
 
 normalize = T.Normalize(mean=[0.491, 0.482, 0.447], std=[0.247, 0.243, 0.262])
 
 train_transfrom = T.Compose([
-    # RandomCrop(32, padding=4),
-    T.RandomResizedCrop(32),
+    RandomCrop(32, padding=4),
+    # T.RandomResizedCrop(32),
     T.RandomFlipLeftRight(),
     T.ToTensor(),
     normalize
@@ -127,6 +127,7 @@ def train(trainloader, net, loss_fn, trainer, epoch):
         losses.update(loss.sum().asscalar(), batch_size)
         train_metric.update(target, output)
         _, acc = train_metric.get()
+        acc *= 100
         top1.update(acc.item(), input.shape[0])
 
         loss.backward()
@@ -161,9 +162,10 @@ def validate(val_loader, net, loss_fn):
         output = net(input)
         loss = loss_fn(output, target)
 
-        losses.update(loss.sum().asscalar, input.shape[0])
+        losses.update(loss.sum().asscalar(), input.shape[0])
         metric.update(target, output)
         _, acc = metric.get()
+        acc *= 100
         top1.update(acc.item(), input.shape[0])
 
         # measure elapsed time
@@ -180,7 +182,7 @@ def validate(val_loader, net, loss_fn):
 
     print(' * Prec {top1.avg:.3f}% '.format(top1=top1))
 
-    return top1
+    return top1.val
 
 
 def save_checkpoint(net, is_best, fdir):
@@ -199,7 +201,7 @@ if __name__ == '__main__':
 
     ctx = mx.gpu()
     net = resnet20_cifar()
-    net.initialize(ctx=ctx)
+    net.initialize(init=mx.initializer.Xavier(), ctx=ctx)
     optimizer = mx.optimizer.SGD(
         momentum=args.momentum, learning_rate=args.lr, wd=args.weight_decay)
     loss_fn = gluon.loss.SoftmaxCrossEntropyLoss()
